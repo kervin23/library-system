@@ -2,7 +2,8 @@
   <v-app>
     <v-app-bar color="primary" elevation="2">
       <v-app-bar-title>Library System</v-app-bar-title>
-      <v-btn icon>
+      <span class="mr-4">Welcome, {{ user?.username }}!</span>
+      <v-btn icon @click="logout">
         <v-icon>mdi-logout</v-icon>
       </v-btn>
     </v-app-bar>
@@ -36,10 +37,19 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const user = JSON.parse(localStorage.getItem('user') || '{}')
 
 const books = ref([
-  { id: 1, title: 'book1', author: 'author 1' },
-  { id: 2, title: 'book2', author: 'author 2' },
-  { id: 3, title: 'book3', author: 'author 3' },
+  { id: 1, title: 'The Great Gatsby', author: 'F. Scott Fitzgerald' },
+  { id: 2, title: 'To Kill a Mockingbird', author: 'Harper Lee' },
+  { id: 3, title: '1984', author: 'George Orwell' },
 ])
+
+const logout = () => {
+  localStorage.removeItem('user')
+  router.push('/')
+}
 </script>

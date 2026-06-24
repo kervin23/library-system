@@ -1,13 +1,9 @@
-import type { DefineComponent } from 'vue'
-declare module '*.vue' {
-  const component: DefineComponent<{}, {}, any>
-  export default component
-}
-
 import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import Home from '../views/Home.vue'
+import Admin from '../views/Admin.vue'
+import Manager from '../views/Manager.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -15,6 +11,8 @@ const router = createRouter({
     { path: '/', component: Login },
     { path: '/register', component: Register },
     { path: '/home', component: Home },
+    { path: '/admin', component: Admin },
+    { path: '/manager', component: Manager },
   ]
 })
 

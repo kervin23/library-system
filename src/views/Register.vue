@@ -7,6 +7,9 @@
             Create Account
           </v-card-title>
 
+          <v-alert v-if="error" type="error" class="mb-3">{{ error }}</v-alert>
+          <v-alert v-if="success" type="success" class="mb-3">{{ success }}</v-alert>
+
           <v-text-field
             v-model="username"
             label="Username"
@@ -41,7 +44,7 @@
             class="mb-3"
           />
 
-          <v-btn color="primary" block size="large" class="mb-3">
+          <v-btn color="primary" block size="large" class="mb-3" @click="register">
             Sign Up
           </v-btn>
 
@@ -57,9 +60,46 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const username = ref('')
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
+const error = ref('')
+const success = ref('')
+
+const register = async () => {
+  error.value = ''
+  success.value = ''
+
+  if (password.value !== confirmPassword.value) {
+    error.value = 'Passwords do not match!'
+    return
+  }
+
+  try {
+    const response = await fetch('http://localhost:8080/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: username.value,
+        email: email.value,
+        password: password.value,
+        role: 'user'
+      })
+    })
+
+    if (response.ok) {
+      success.value = 'Account created! Redirecting to login...'
+      setTimeout(() => router.push('/'), 2000)
+    } else {
+      const msg = await response.text()
+      error.value = msg
+    }
+  } catch (e) {
+    error.value = 'Cannot connect to server'
+  }
+}
 </script>

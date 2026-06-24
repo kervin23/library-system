@@ -7,6 +7,8 @@
             Library System
           </v-card-title>
 
+          <v-alert v-if="error" type="error" class="mb-3">{{ error }}</v-alert>
+
           <v-text-field
             v-model="username"
             label="Username"
@@ -24,7 +26,7 @@
             class="mb-3"
           />
 
-          <v-btn color="primary" block size="large" class="mb-3">
+          <v-btn color="primary" block size="large" class="mb-3" @click="login">
             Login
           </v-btn>
 
@@ -40,7 +42,37 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const username = ref('')
 const password = ref('')
+const error = ref('')
+
+const login = async () => {
+  try {
+    const response = await fetch('http://localhost:8080/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: username.value, password: password.value })
+    })
+
+    if (response.ok) {
+      const user = await response.json()
+      localStorage.setItem('user', JSON.stringify(user))
+      
+      if (user.role === 'admin') {
+        router.push('/admin')
+      } else if (user.role === 'manager') {
+        router.push('/manager')
+      } else {
+        router.push('/home')
+      }
+    } else {
+      error.value = 'Invalid username or password'
+    }
+  } catch (e) {
+    error.value = 'Cannot connect to server'
+  }
+}
 </script>
