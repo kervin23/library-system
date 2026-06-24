@@ -36,17 +36,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const user = JSON.parse(localStorage.getItem('user') || '{}')
+const books = ref([])
 
-const books = ref([
-  { id: 1, title: 'The Great Gatsby', author: 'F. Scott Fitzgerald' },
-  { id: 2, title: 'To Kill a Mockingbird', author: 'Harper Lee' },
-  { id: 3, title: '1984', author: 'George Orwell' },
-])
+const fetchBooks = async () => {
+  try {
+    const response = await fetch('http://localhost:8080/api/books')
+    books.value = await response.json()
+  } catch (e) {
+    console.error('Cannot fetch books')
+  }
+}
+
+onMounted(() => {
+  fetchBooks()
+})
 
 const logout = () => {
   localStorage.removeItem('user')
