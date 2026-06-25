@@ -150,10 +150,15 @@ const login = async () => {
     })
 
     if (response.ok) {
-      const user = await response.json()
-      localStorage.setItem('user', JSON.stringify(user))
-      if (user.role === 'admin') router.push('/admin')
-      else if (user.role === 'manager') router.push('/manager')
+      const data = await response.json()
+      localStorage.setItem('token', data.token)
+      localStorage.setItem('user', JSON.stringify({
+        id: data.id,
+        username: data.username,
+        role: data.role
+      }))
+      if (data.role === 'admin') router.push('/admin')
+      else if (data.role === 'manager') router.push('/manager')
       else router.push('/home')
     } else {
       error.value = 'Invalid username or password'

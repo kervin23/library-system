@@ -42,6 +42,7 @@ const router = useRouter()
 const user = JSON.parse(localStorage.getItem('user') || '{}')
 
 const logout = () => {
+  localStorage.removeItem('token')
   localStorage.removeItem('user')
   router.push('/')
 }

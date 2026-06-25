@@ -256,7 +256,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="u in userList" :key="u.id">
+              <tr v-for="u in userList.filter(u => u.role === 'user')" :key="u.id">
                 <td>{{ u.username }}</td>
                 <td>{{ u.email }}</td>
                 <td>{{ u.role }}</td>
@@ -430,6 +430,7 @@ onMounted(() => {
 })
 
 const logout = () => {
+  localStorage.removeItem('token')
   localStorage.removeItem('user')
   router.push('/')
 }
