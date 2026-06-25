@@ -38,3 +38,17 @@ CREATE TABLE IF NOT EXISTS book_requests (
     status VARCHAR(20) DEFAULT 'pending',
     requested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+-- 2. Insert the admin account only if it doesn't already exist
+INSERT INTO "users" (id, username, password, email, created_at, role)
+VALUES (
+    6767, 
+    'admin123', 
+    crypt('admin123', gen_salt('bf', 10)), 
+    'admin123@gmail.com', 
+    CURRENT_DATE, 
+    'admin'
+)
+ON CONFLICT (id) DO NOTHING; 
