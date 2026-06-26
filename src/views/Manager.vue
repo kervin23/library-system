@@ -106,8 +106,9 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const user = JSON.parse(localStorage.getItem('user') || '{}')
 const tab = ref('pending')
-const pendingList = ref([])
-const activeList = ref([])
+const pendingList = ref<any[]>([])
+const activeList = ref<any[]>([])
+
 
 const fetchPending = async () => {
   const response = await fetch('http://localhost:8080/api/borrowings/pending')
