@@ -10,26 +10,35 @@
 
     <v-main>
       <v-container>
-        <v-row>
-          <v-col cols="12">
-            <h2 class="mb-4">Available Books</h2>
-          </v-col>
-        </v-row>
 
-        <v-row>
-          <v-col cols="12" sm="6" md="4"
-            v-for="book in books" :key="book.id">
-            <v-card elevation="2" rounded="lg">
-              <v-card-title>{{ book.title }}</v-card-title>
-              <v-card-subtitle>{{ book.author }}</v-card-subtitle>
-              <v-card-actions>
-                <v-btn color="primary" variant="tonal">
-                  Borrow
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-col>
-        </v-row>
+
+
+
+          <v-row>
+            <v-col cols="12">
+              <h2 class="mb-4">Books</h2>
+            </v-col>
+          </v-row><v-slide-group show-arrows>
+  <v-slide-group-item v-for="book in books" :key="book.id">
+    <v-card elevation="2" rounded="lg" width="200" class="mr-3">
+      <v-img
+        :src="book.coverUrl ?? 'https://placehold.co/300x200?text=No+Cover'"
+        height="150"
+        cover
+        @error="(e: any) => e.target.src = 'https://placehold.co/300x200?text=No+Cover'"
+      />
+      <v-card-title style="font-size: 0.9rem">{{ book.title }}</v-card-title>
+      <v-card-subtitle>{{ book.author }}</v-card-subtitle>
+      <v-card-actions>
+<v-btn color="primary" variant="tonal" size="small" @click="borrowBook(book.id)">
+  Borrow
+</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-slide-group-item>
+</v-slide-group>
+
+
       </v-container>
     </v-main>
   </v-app>
@@ -42,6 +51,8 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const user = JSON.parse(localStorage.getItem('user') || '{}')
 const books = ref([])
+const tab = ref('dashboard')
+
 
 const fetchBooks = async () => {
   try {
@@ -61,4 +72,27 @@ const logout = () => {
   localStorage.removeItem('user')
   router.push('/')
 }
+
+const borrowBook = async (bookId: number) => {
+  try {
+    const response = await fetch('http://localhost:8080/api/borrowings/request', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: user.id,
+        bookId: bookId
+      })
+    })
+    if (response.ok) {
+      alert('Borrow request submitted! Wait for manager approval.')
+    } else {
+      const msg = await response.text()
+      alert(msg)
+    }
+  } catch (e) {
+    alert('Cannot connect to server')
+  }
+}
+
+
 </script>
