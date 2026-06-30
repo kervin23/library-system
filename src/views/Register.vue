@@ -1,127 +1,117 @@
 <template>
-  <v-app :theme="isDark ? 'dark' : 'light'">
-    <v-main>
+  <v-app>
+    <v-main class="auth-bg">
       <v-container fluid class="fill-height pa-0">
         <v-row no-gutters class="fill-height">
-<!-- LEFT SIDE -->
-<v-col cols="12" md="6" class="d-none d-md-flex left-panel" :class="isDark ? 'left-dark' : 'left-light'">
-  <div class="left-bg-circles">
-    <div class="circle circle-1"></div>
-    <div class="circle circle-2"></div>
-    <div class="circle circle-3"></div>
-  </div>
-  <div class="left-content">
-    <div class="icon-grid">
-      <v-icon size="28" opacity="0.3">mdi-book-open-variant</v-icon>
-      <v-icon size="20" opacity="0.2">mdi-bookmark</v-icon>
-      <v-icon size="24" opacity="0.25">mdi-library</v-icon>
-      <v-icon size="18" opacity="0.2">mdi-book</v-icon>
-      <v-icon size="32" opacity="0.15">mdi-bookshelf</v-icon>
-      <v-icon size="22" opacity="0.3">mdi-feather</v-icon>
-    </div>
 
-    <svg viewBox="0 0 200 200" width="220" height="220" xmlns="http://www.w3.org/2000/svg">
-      <rect x="20" y="155" width="160" height="8" rx="3" fill="currentColor" opacity="0.4"/>
-      <rect x="30" y="100" width="22" height="55" rx="3" fill="currentColor" opacity="0.9"/>
-      <rect x="31" y="101" width="4" height="53" rx="1" fill="white" opacity="0.2"/>
-      <rect x="56" y="85" width="22" height="70" rx="3" fill="currentColor" opacity="0.7"/>
-      <rect x="57" y="86" width="4" height="68" rx="1" fill="white" opacity="0.2"/>
-      <rect x="82" y="95" width="18" height="60" rx="3" fill="currentColor" opacity="0.85"/>
-      <rect x="104" y="78" width="24" height="77" rx="3" fill="currentColor" opacity="0.6"/>
-      <rect x="105" y="79" width="4" height="75" rx="1" fill="white" opacity="0.2"/>
-      <rect x="132" y="90" width="20" height="65" rx="3" fill="currentColor" opacity="0.8"/>
-      <g transform="rotate(-15, 155, 130)">
-        <rect x="148" y="105" width="16" height="50" rx="3" fill="currentColor" opacity="0.5"/>
-      </g>
-      <circle cx="60" cy="40" r="2" fill="currentColor" opacity="0.4"/>
-      <circle cx="100" cy="25" r="3" fill="currentColor" opacity="0.3"/>
-      <circle cx="150" cy="45" r="2" fill="currentColor" opacity="0.5"/>
-      <circle cx="40" cy="60" r="1.5" fill="currentColor" opacity="0.3"/>
-      <circle cx="170" cy="65" r="2" fill="currentColor" opacity="0.4"/>
-    </svg>
+          <!-- LEFT PANEL -->
+          <v-col cols="12" md="6" class="d-none d-md-flex left-panel">
+            <div class="left-overlay"/>
+            <div class="left-content">
+              <div class="brand-mark mb-6">
+                <v-icon size="48" color="#C8933A">mdi-bookshelf</v-icon>
+              </div>
+              <h1 class="brand-title">Library</h1>
+              <p class="brand-sub">Library Management System</p>
 
-    <h1 class="left-title">Library System</h1>
-
-    <div class="quote-box">
-      <v-icon size="28" class="quote-icon">mdi-format-quote-open</v-icon>
-      <p class="left-quote">A reader lives a thousand lives before he dies. The man who never reads lives only one.</p>
-      <p class="left-author">— George R.R. Martin</p>
-    </div>
-
-    <div class="stats-row">
-      <div class="stat">
-        <span class="stat-number">1000+</span>
-        <span class="stat-label">Books</span>
-        <span class="stat-number">  |  </span>
-        <span class="stat-number">500+</span>
-        <span class="stat-label">Readers</span>
-        <span class="stat-number">  |  </span>
-        <span class="stat-number">50+</span>
-        <span class="stat-label">Categories</span>
-      </div>
-    </div>
-  </div>
-</v-col>
-
-          <!-- RIGHT SIDE -->
-          <v-col cols="12" md="6" class="d-flex align-center justify-center right-panel" :class="isDark ? 'right-dark' : 'right-light'">
-            <div class="form-wrapper">
-
-              <div class="d-flex justify-space-between align-center mb-6">
-                <h2 class="form-title">Create Account</h2>
-                  <v-btn icon variant="text" @click="toggleDark">
-                  <v-icon>{{ isDark ? 'mdi-weather-sunny' : 'mdi-weather-night' }}</v-icon>
-                </v-btn>
+              <div class="features-list mt-10 mb-10">
+                <div class="feature-item" v-for="f in features" :key="f.text">
+                  <v-icon :icon="f.icon" color="#C8933A" size="20"/>
+                  <span>{{ f.text }}</span>
+                </div>
               </div>
 
-              <p class="form-subtitle mb-6">Sign in to your account</p>
+              <div class="stat-strip">
+                <div class="stat-item">
+                  <span class="stat-num">1,000+</span>
+                  <span class="stat-lbl">Books</span>
+                </div>
+                <div class="stat-divider"/>
+                <div class="stat-item">
+                  <span class="stat-num">500+</span>
+                  <span class="stat-lbl">Readers</span>
+                </div>
+                <div class="stat-divider"/>
+                <div class="stat-item">
+                  <span class="stat-num">50+</span>
+                  <span class="stat-lbl">Categories</span>
+                </div>
+              </div>
+            </div>
+          </v-col>
 
-              <v-alert v-if="error" type="error" class="mb-4" rounded="lg">{{ error }}</v-alert>
+          <!-- RIGHT PANEL -->
+          <v-col cols="12" md="6" class="d-flex align-center justify-center right-panel">
+            <div class="form-card">
+              <div class="form-header mb-7">
+                <div class="mobile-brand d-flex d-md-none align-center mb-6 gap-2">
+                  <v-icon color="#C8933A" size="28">mdi-bookshelf</v-icon>
+                  <span class="brand-title-sm">Library</span>
+                </div>
+                <h2 class="form-title">Create your account</h2>
+                <p class="form-sub">Join the community of readers today</p>
+              </div>
 
-              <v-text-field
-                v-model="username"
-                label="Username"
-                prepend-inner-icon="mdi-account"
-                variant="outlined"
-                class="mb-3"
-              />
+              <v-alert v-if="error" type="error" variant="tonal" rounded="lg" class="mb-4">{{ error }}</v-alert>
+              <v-alert v-if="success" type="success" variant="tonal" rounded="lg" class="mb-4">{{ success }}</v-alert>
 
-              <v-text-field
-                v-model="email"
-                label="Email"
-                prepend-inner-icon="mdi-email"
-                variant="outlined"
-                class="mb-3"
-              />
+              <div class="field-group mb-4">
+                <label class="field-label">Username</label>
+                <v-text-field
+                  v-model="username"
+                  placeholder="Choose a username"
+                  prepend-inner-icon="mdi-account-outline"
+                  variant="outlined" rounded="lg" hide-details
+                  class="warm-field"
+                />
+              </div>
 
-              <v-text-field
-                v-model="password"
-                label="Password"
-                prepend-inner-icon="mdi-lock"
-                type="password"
-                variant="outlined"
-                class="mb-3"
-              />
+              <div class="field-group mb-4">
+                <label class="field-label">Email Address</label>
+                <v-text-field
+                  v-model="email"
+                  placeholder="your@email.com"
+                  prepend-inner-icon="mdi-email-outline"
+                  variant="outlined" rounded="lg" hide-details
+                  class="warm-field"
+                />
+              </div>
 
-              <v-text-field
-                v-model="confirmPassword"
-                label="Confirm Password"
-                prepend-inner-icon="mdi-lock-check"
-                type="password"
-                variant="outlined"
-                class="mb-3"
-              />
+              <div class="field-group mb-4">
+                <label class="field-label">Password</label>
+                <v-text-field
+                  v-model="password"
+                  placeholder="Create a strong password"
+                  prepend-inner-icon="mdi-lock-outline"
+                  :type="showPw ? 'text' : 'password'"
+                  :append-inner-icon="showPw ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
+                  @click:append-inner="showPw = !showPw"
+                  variant="outlined" rounded="lg" hide-details
+                  class="warm-field"
+                />
+              </div>
 
-              <v-btn color="primary" block size="large" class="mb-3" @click="register">
-                Sign Up
+              <div class="field-group mb-6">
+                <label class="field-label">Confirm Password</label>
+                <v-text-field
+                  v-model="confirmPassword"
+                  placeholder="Repeat your password"
+                  prepend-inner-icon="mdi-lock-check-outline"
+                  type="password"
+                  variant="outlined" rounded="lg" hide-details
+                  class="warm-field"
+                />
+              </div>
+
+              <v-btn block size="large" rounded="lg" class="sign-up-btn mb-5" :loading="loading" @click="register">
+                <v-icon start>mdi-account-plus-outline</v-icon>
+                Create Account
               </v-btn>
 
-              <div class="text-center">
-                <span>Already have an account? </span>
-                <RouterLink to="/">Login</RouterLink>
-              </div>
-
-
+              <p class="text-center login-link">
+                Already have an account?
+                <RouterLink to="/login" class="link-accent">Sign in here</RouterLink>
+              </p>
             </div>
           </v-col>
 
@@ -130,6 +120,7 @@
     </v-main>
   </v-app>
 </template>
+
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -141,106 +132,125 @@ const password = ref('')
 const confirmPassword = ref('')
 const error = ref('')
 const success = ref('')
-const isDark = ref(localStorage.getItem('darkMode') === 'true')
+const loading = ref(false)
+const showPw = ref(false)
 
-const toggleDark = () => {
-  isDark.value = !isDark.value
-  localStorage.setItem('darkMode', String(isDark.value))
-}
+const features = [
+  { icon: 'mdi-book-search-outline', text: 'Browse thousands of books across 50+ categories' },
+  { icon: 'mdi-clock-check-outline', text: 'Request and track borrowings in real time' },
+  { icon: 'mdi-history', text: 'Keep a full history of everything you\'ve read' },
+  { icon: 'mdi-bell-outline', text: 'Get notified when your requests are approved' },
+]
 
 const register = async () => {
   error.value = ''
   success.value = ''
-
   if (password.value !== confirmPassword.value) {
-    error.value = 'Passwords do not match!'
+    error.value = 'Passwords do not match'
     return
   }
-
+  loading.value = true
   try {
     const response = await fetch('http://localhost:8080/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: username.value,
-        email: email.value,
-        password: password.value,
-        role: 'user'
-      })
+      body: JSON.stringify({ username: username.value, email: email.value, password: password.value, role: 'user' })
     })
-
     if (response.ok) {
-      success.value = 'Account created! Redirecting to login...'
+      success.value = 'Account created! Redirecting to sign in...'
       setTimeout(() => router.push('/'), 2000)
     } else {
-      const msg = await response.text()
-      error.value = msg
+      error.value = await response.text()
     }
-  } catch (e) {
+  } catch {
     error.value = 'Cannot connect to server'
+  } finally {
+    loading.value = false
   }
 }
 </script>
 
-
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Inter:wght@300;400;500;600&display=swap');
+
+.auth-bg { background: #FAF6EF; }
 .left-panel {
-  align-items: center;
-  justify-content: center;
+  position: relative;
+  background: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=900&q=80') center/cover no-repeat;
+  align-items: center; justify-content: center; overflow: hidden;
 }
-.left-dark {
-  background: #1a1a2e;
-  color: #e0e0e0;
-}
-.left-light {
-  background: #f0f4ff;
-  color: #3a3a5c;
+.left-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(202, 161, 120, 0.9) 0%, rgba(50,28,10,0.82) 100%);
 }
 .left-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 2rem;
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  padding: 3rem 2.5rem; color: #FAF6EF;
 }
-.left-title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
+.brand-mark { opacity: 0.9; }
+.brand-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2.6rem; font-weight: 700;
+  color: #F5ECD7; letter-spacing: 0.02em; line-height: 1.1;
 }
-.left-quote {
-  font-size: 1rem;
-  font-style: italic;
-  opacity: 0.8;
-  max-width: 320px;
-  line-height: 1.6;
+.brand-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: #C8933A; margin-top: 0.3rem;
 }
-.left-author {
-  font-size: 0.85rem;
-  opacity: 0.6;
-  margin-top: 0.5rem;
+.features-list { display: flex; flex-direction: column; gap: 1rem; max-width: 340px; text-align: left; }
+.feature-item {
+  display: flex; align-items: center; gap: 0.85rem;
+  font-family: 'Inter', sans-serif; font-size: 0.88rem;
+  color: rgba(245,236,215,0.85); line-height: 1.4;
 }
-.right-panel {
-  min-height: 100vh;
+.stat-strip {
+  display: flex; align-items: center; gap: 1.5rem;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(200,147,58,0.25);
+  border-radius: 50px; padding: 0.9rem 2rem;
 }
-.right-dark {
-  background: #0f0f1a;
+.stat-item { display: flex; flex-direction: column; align-items: center; }
+.stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem; font-weight: 700; color: #C8933A;
 }
-.right-light {
-  background: #ffffff;
+.stat-lbl {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem; color: rgba(245,236,215,0.6);
+  text-transform: uppercase; letter-spacing: 0.1em;
 }
-.form-wrapper {
-  width: 100%;
-  max-width: 400px;
-  padding: 2rem;
+.stat-divider { width: 1px; height: 28px; background: rgba(200,147,58,0.3); }
+.right-panel { background: #FAF6EF; min-height: 100vh; }
+.form-card { width: 100%; max-width: 420px; padding: 2.5rem 2rem; }
+.brand-title-sm {
+  font-family: 'Playfair Display', serif; font-size: 1.4rem;
+  font-weight: 700; color: #5C3D1E;
 }
 .form-title {
-  font-size: 1.8rem;
-  font-weight: 700;
+  font-family: 'Playfair Display', serif; font-size: 2rem;
+  font-weight: 700; color: #3B2209; line-height: 1.2;
 }
-.form-subtitle {
-  opacity: 0.6;
-  font-size: 0.95rem;
+.form-sub {
+  font-family: 'Inter', sans-serif; font-size: 0.9rem;
+  color: #8A7060; margin-top: 0.4rem;
 }
+.field-label {
+  display: block; font-family: 'Inter', sans-serif;
+  font-size: 0.8rem; font-weight: 600; color: #5C3D1E;
+  letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 0.4rem;
+}
+.warm-field :deep(.v-field) { background: #FFF8EE !important; border-color: #D9C5A0 !important; }
+.warm-field :deep(.v-field--focused) { border-color: #C8933A !important; }
+.warm-field :deep(input::placeholder) { color: #B0957A; }
+.sign-up-btn {
+  background: linear-gradient(135deg, #C8933A 0%, #A0702A 100%) !important;
+  color: #FAF6EF !important; font-family: 'Inter', sans-serif;
+  font-weight: 600; letter-spacing: 0.05em;
+  box-shadow: 0 4px 16px rgba(160,112,42,0.35) !important;
+}
+.login-link { font-family: 'Inter', sans-serif; font-size: 0.88rem; color: #8A7060; }
+.link-accent { color: #C8933A; font-weight: 600; text-decoration: none; }
+.link-accent:hover { text-decoration: underline; }
 </style>
