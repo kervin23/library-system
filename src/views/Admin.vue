@@ -546,13 +546,17 @@ const fetchAll = async () => {
 const openUserDetail = (u: any) => { selectedUser.value = u; userDetailOpen.value = true }
 
 const deleteBook = async (id: number) => { await fetch(`http://localhost:8080/api/books/${id}`, { method: 'DELETE' }); fetchAll() }
+// book-service's endpoint is PATCH /{id}/quantity?delta=<int> (see BookController.updateQuantity),
+// not PUT with a {quantity} body - it applies a relative change, not an absolute value. Sending
+// the wrong HTTP method here doesn't even reach the handler (Spring 405s a PUT against a
+// @PatchMapping route), so these were silently doing nothing before.
 const addQuantity = async (book: any) => {
-  await fetch(`http://localhost:8080/api/books/${book.id}/quantity`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ quantity: book.quantity + 1 }) })
+  await fetch(`http://localhost:8080/api/books/${book.id}/quantity?delta=1`, { method: 'PATCH' })
   fetchAll()
 }
 const removeQuantity = async (book: any) => {
   if (book.quantity <= 0) return
-  await fetch(`http://localhost:8080/api/books/${book.id}/quantity`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ quantity: book.quantity - 1 }) })
+  await fetch(`http://localhost:8080/api/books/${book.id}/quantity?delta=-1`, { method: 'PATCH' })
   fetchAll()
 }
 
@@ -579,7 +583,18 @@ const addToLibrary = async (book: any) => {
 }
 const addCustomBook = async () => {
   if (!customBook.value.title || !customBook.value.author) { snack.value = { show: true, text: 'Title and Author are required', color: 'error' }; return }
-  await fetch('http://localhost:8080/api/books', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...customBook.value, category: customBook.value.category === 'all' ? null : customBook.value.category, status: 'available' }) })
+  // Vuetify's v-text-field type="number" hands back a string the moment the user edits it
+  // (it doesn't auto-cast), so quantity can arrive here as e.g. "5" instead of 5. The backend's
+  // Book.quantity is an Integer, and Jackson 3.x won't coerce a quoted numeric string into it -
+  // it fails deserialization instead of silently converting like older Jackson did. Coerce it
+  // to a real number here so the payload always sends a proper JSON number.
+  const quantity = Number(customBook.value.quantity) || 1
+  // books.isbn has a UNIQUE constraint. Postgres allows unlimited rows with isbn = NULL (no
+  // value, never conflicts) but only ONE row can ever have isbn = '' - an empty string is a
+  // real, colliding value. customBook.value.isbn defaults to '' when the user leaves it blank,
+  // so send null instead whenever it's empty, the same way the Open Library "+Add" flow already does.
+  const isbn = customBook.value.isbn?.trim() ? customBook.value.isbn.trim() : null
+  await fetch('http://localhost:8080/api/books', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...customBook.value, quantity, isbn, category: customBook.value.category === 'all' ? null : customBook.value.category, status: 'available' }) })
   snack.value = { show: true, text: 'Book added!', color: 'success' }
   customBook.value = { title: '', author: '', isbn: '', category: 'all', quantity: 1 }
   fetchAll()
